@@ -1,1 +1,0 @@
-//Funciones comunes (lectura, timer, estadísticas)
