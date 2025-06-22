@@ -1,43 +1,82 @@
 #include "kmp.h"
+#include <vector>
+#include <string>
 
-std::vector<int> buildLPS(const std::string& pattern) {
-    int n = pattern.length();
-    std::vector<int> lps(n, 0);
-    int len = 0;
+void buildLPS(const std::string &pattern, std::vector<int> &lps)
+{
+    int m = pattern.size();
+    lps.assign(m, 0);
+    int len = 0; // length of the previous longest prefix suffix
+    int i = 1;   // the current index in pattern
 
-    for (int i = 1; i < n; ) {
-        if (pattern[i] == pattern[len]) {
+    while (i < m)
+    {
+        if (pattern[i] == pattern[len])
+        {
             len++;
-            lps[i++] = len;
-        } else {
+            lps[i] = len;
+            i++;
+        }
+        else
+        {
             if (len != 0)
+            {
+                // retrocedemos al valor previo del lps
                 len = lps[len - 1];
+            }
             else
-                lps[i++] = 0;
+            {
+                // si no hay coincidencia, lps[i] es 0
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-    return lps;
 }
 
-std::vector<int> kmpSearch(const std::string& text, const std::string& pattern) {
-    std::vector<int> lps = buildLPS(pattern);
-    std::vector<int> positions;
-    int i = 0, j = 0;
-    int n = text.length(), m = pattern.length();
+std::vector<int> kmpSearch(const std::string &text, const std::string &pattern)
+{
+    // casos triviales
+    if (pattern.empty())
+        return {};
+    if (text.empty() || pattern.size() > text.size())
+        return {};
 
-    while (i < n) {
-        if (pattern[j] == text[i]) {
-            i++, j++;
+    int n = (int)text.size();
+    int m = (int)pattern.size();
+    std::vector<int> lps;
+    buildLPS(pattern, lps);
+
+    std::vector<int> matches;
+    int i = 0; // indice para texto
+    int j = 0; // indice para patron
+
+    while (i < n)
+    {
+        if (text[i] == pattern[j])
+        {
+            i++;
+            j++;
+            // si completamos el patron se registra la coincidencia
+            if (j == m)
+            {
+                matches.push_back(i - m);
+                j = lps[j - 1]; // retrocedemos al valor previo del lps
+            }
         }
-
-        if (j == m) {
-            positions.push_back(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pattern[j] != text[i]) {
-            if (j != 0) j = lps[j - 1];
-            else i++;
+        else
+        {
+            if (j != 0)
+            {
+                // no coincide: retrocedemos j para evitar empezar de 0
+                j = lps[j - 1];
+            }
+            else
+            {
+                // j==0 y no hay coincidencia, avanzamos i
+                i++;
+            }
         }
     }
-
-    return positions;
+    return matches;
 }

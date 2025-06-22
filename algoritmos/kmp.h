@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
-std::vector<int> kmpSearch(const std::string& text, const std::string& pattern);
+// Devuelve todos los offsets donde 'pattern' aparece en 'text'
+std::vector<int> kmpSearch(const std::string &text, const std::string &pattern);
 
 #endif
