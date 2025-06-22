@@ -1,4 +1,5 @@
 # Búsqueda de Patrones en Documentos
+
 Se puede buscar patrones de texto en múltiples documentos concatenados usando soluciones algoritmicas y estructurales.  
 Los documentos tambien se pueden concatenar usando el símbolo `$` como separador, y el sistema informa en qué documento aparece cada patrón.
 
@@ -16,10 +17,11 @@ Por lo tanto, considera **distintos** los caracteres con tilde (acentos) y sin t
 Ejemplo: `canción` ≠ `cancion`, `cómo` ≠ `como`.
 Si se desea hacer la búsqueda insensible a acentos o mayúsculas, se debe aplicar una normalización previa al texto y patrones (no implementado en esta versión).
 
-
-## Cómo compilar
+## Compilación
 
 ```bash
-g++ -std=c++17 comparador/main.cpp algoritmos/kmp.cpp utils/io.cpp -o kmp !!actualizar cada vez que se agreguen algoritmos
-./kmp
-
+git clone <tu-repo-url>
+cd DetectarPatrones
+chmod +x scripts/build.sh
+./scripts/build.sh
+```
