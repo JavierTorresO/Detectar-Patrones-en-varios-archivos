@@ -1,142 +1,67 @@
-//Código para correr pruebas y medir tiempos pruebas
-
 #include <iostream>
-#include <vector>
+#include <fstream>
 #include <string>
-#include <sstream>
+#include <vector>
 #include <chrono>
+#include "kmp.h"
+#include "utils/io.h" // asumo tienes funciones para leer carpetas y textos
 
-#include "../algoritmos/kmp.h"
-#include "../utils/io.h"
+using clock = std::chrono::high_resolution_clock;
 
-void buscarPatrones(const std::string& texto, const std::vector<std::string>& nombresDoc, const std::vector<int>& cortes) {
+// Ejecuta KMP sobre un texto concatenado de varios documentos y mide tiempos
+void buscarPatrones(const std::string &texto,
+                    const std::vector<std::string> &nombresDoc,
+                    const std::vector<int> &cortes)
+{
+    std::cout << "Ingresa patrones (una línea c/u), luego Ctrl+D para buscar:\n";
     std::vector<std::string> patrones;
-    std::string input;
-
-    std::cout << "Ingrese patrones uno por linea (linea vacia para buscar) :\n";
-    while (true) {
-        std::getline(std::cin, input);
-        if (input.empty()) break;
-        patrones.push_back(input);
+    std::string pat;
+    while (std::getline(std::cin, pat))
+    {
+        if (!pat.empty())
+            patrones.push_back(pat);
     }
-
-    if (patrones.empty()) {
-        std::cout << "No se ingresaron patrones. Volviendo al menu.\n";
+    if (patrones.empty())
+    {
+        std::cerr << "No se ingresó ningún patrón.\n";
         return;
     }
 
-    auto start = std::chrono::high_resolution_clock::now();
+    auto t0_total = clock::now();
+    for (const auto &p : patrones)
+    {
+        auto t0 = clock::now();
+        auto occs = kmpSearch(texto, p);
+        auto t1 = clock::now();
 
-    for (int i = 0; i < patrones.size(); i++) {
-        const std::string& patron = patrones[i];
-        std::vector<int> ocurrencias = kmpSearch(texto, patron);
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "\nPatrón: \"" << p << "\" → "
+                  << occs.size() << " ocurrencias en " << ms << " ms\n";
 
-        std::cout << "\nPatron #" << (i + 1) << " \"" << patron << "\":\n";
-        if (ocurrencias.empty()) {
-            std::cout << "No encontrado en ningun documento.\n";
-        } else {
-            std::cout << "Encontrado en:\n";
-            for (int pos : ocurrencias) {
-                int docIndex = obtenerDocumento(pos, cortes);
-                if (docIndex != -1 && docIndex <= nombresDoc.size()) {
-                    std::cout << "   - " << nombresDoc[docIndex - 1] << "\n";
-                }
-            }
+        for (int pos : occs)
+        {
+            int docId = obtenerDocumento(pos, cortes);
+            int offset = (docId == 1 ? pos : pos - cortes[docId - 2]);
+            std::cout << "  • Doc " << docId
+                      << " (“" << nombresDoc[docId - 1] << "”) @ pos "
+                      << offset << "\n";
         }
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duracion = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-    std::cout << "\nTiempo total de busqueda para " << patrones.size() << " patrones: "
-              << duracion.count() << " ms\n";
+    auto t1_total = clock::now();
+    auto total_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1_total - t0_total).count();
+    std::cout << "\nTiempo total (todos patrones): " << total_ms << " ms\n";
 }
 
-int main() {
+int main(int argc, char *argv[])
+{
+    // Leer lista de archivos y concatenarlos
     std::vector<std::string> nombresDoc;
     std::vector<int> cortes;
-    std::string textoTotal;
-    std::string carpeta = "datos/documentos";
 
-    // Cargar todos los documentos disponibles para mostrar y búsquedas iniciales
-    nombresDoc.clear();
-    cortes.clear();
-    textoTotal = leerDocumentosDesdeCarpeta(carpeta, nombresDoc, cortes);
+    // Se lee y concatenan los .txt
+    std::string texto = leerDocumentosDesdeCarpeta("datos/documentos/", nombresDoc, cortes);
 
-    while (true) {
-        std::cout << "\n--- Menu ---\n";
-        std::cout << "1. Buscar patrones en documentos\n";
-        std::cout << "2. Concatenar documentos seleccionados\n";
-        std::cout << "3. Salir\n";
-        std::cout << "Ingrese opcion: ";
-
-        std::string opcion;
-        std::getline(std::cin, opcion);
-
-        if (opcion == "1") {
-            if (textoTotal.empty()) {
-                std::cout << "No hay documentos cargados.\n";
-            } else {
-                buscarPatrones(textoTotal, nombresDoc, cortes);
-            }
-        } else if (opcion == "2") {
-            if (nombresDoc.empty()) {
-                std::cout << "No hay documentos para seleccionar.\n";
-                continue;
-            }
-
-            std::cout << "Documentos disponibles:\n";
-            for (int i = 0; i < nombresDoc.size(); i++) {
-                std::cout << (i + 1) << ". " << nombresDoc[i] << "\n";
-            }
-
-            std::cout << "Ingrese los NUMEROS de documentos a concatenar (separados por espacios) : ";
-            std::string line;
-            std::getline(std::cin, line);
-            std::istringstream iss(line);
-            std::vector<int> indices;
-            int num;
-            while (iss >> num) {
-                if (num >= 1 && num <= (int)nombresDoc.size()) {
-                    indices.push_back(num - 1);
-                }
-            }
-
-            if (indices.empty()) {
-                std::cout << "No se seleccionaron documentos validos.\n";
-                continue;
-            }
-
-            std::vector<std::string> docsSeleccionados;
-            for (int idx : indices) {
-                docsSeleccionados.push_back(nombresDoc[idx]);
-            }
-
-            cortes.clear();
-            textoTotal = concatenarDocumentosSeleccionados(carpeta, docsSeleccionados, cortes);
-            nombresDoc = docsSeleccionados;
-
-            std::cout << "Documentos concatenados:\n";
-            for (const auto& n : nombresDoc) {
-                std::cout << "- " << n << "\n";
-            }
-
-            //Mostrar texto concatenado
-            std::cout << "\nTexto concatenado con '$':\n";
-            std::cout << textoTotal << "\n";
-
-        } else if (opcion == "3") {
-            std::cout << "Saliendo...\n";
-            break;
-        } else {
-            std::cout << "Opcion invalida. Intente de nuevo.\n";
-        }
-    }
-
+    // Lanzar búsquedas
+    buscarPatrones(texto, nombresDoc, cortes);
     return 0;
 }
-
-
-
-//como correr: g++ -std=c++17 comparador/main.cpp algoritmos/kmp.cpp utils/io.cpp -o kmp.exe
-//luego: .\kmp.exe
