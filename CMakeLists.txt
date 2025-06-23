@@ -13,7 +13,8 @@ include_directories(core PUBLIC
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/utils
     ${PROJECT_SOURCE_DIR}/algoritmos
-    ${PROJECT_SOURCE_DIR}/estructuras)
+    ${PROJECT_SOURCE_DIR}/estructuras
+)
 
 # Fuente de algoritmos, estructuras y comparador
 file(GLOB ALGORITHM_SRCS
@@ -40,6 +41,7 @@ add_library(core STATIC
 add_executable(comparador ${COMPARADOR_SRC})
 target_link_libraries(comparador PRIVATE core)
 
-# Directorio de salida (prueba1)
+# Directorio de salida (prueba1) 
 set_target_properties(comparador PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+)
