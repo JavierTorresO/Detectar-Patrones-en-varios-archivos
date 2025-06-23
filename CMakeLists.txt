@@ -45,3 +45,9 @@ target_link_libraries(comparador PRIVATE core)
 set_target_properties(comparador PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
 )
+
+add_executable(benchmark comparador/bench.cpp)
+target_link_libraries(benchmark PRIVATE core)
+set_target_properties(benchmark PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+)
