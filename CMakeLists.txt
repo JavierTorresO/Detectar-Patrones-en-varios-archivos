@@ -9,9 +9,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-O2 -Wall -Wextra)
 
 # Incluir headers
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(core PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/utils
+    ${PROJECT_SOURCE_DIR}/algoritmos
+    ${PROJECT_SOURCE_DIR}/estructuras)
 
-# Fuente de algoritmos y estructuras
+# Fuente de algoritmos, estructuras y comparador
 file(GLOB ALGORITHM_SRCS
     ${PROJECT_SOURCE_DIR}/algoritmos/*.cpp
 )
@@ -21,14 +25,21 @@ file(GLOB STRUCTURE_SRCS
 file(GLOB UTIL_SRCS
     ${PROJECT_SOURCE_DIR}/utils/*.cpp
 )
-# Fuente del comparador
 set(COMPARADOR_SRC
-    comparador/main.cpp
+    ${PROJECT_SOURCE_DIR}/comparador/main.cpp
 )
 
 # Crear librería estática con algoritmos, estructuras y utils
-add_library(core ${ALGORITHM_SRCS} ${STRUCTURE_SRCS} ${UTIL_SRCS})
+add_library(core STATIC
+    ${ALGORITHM_SRCS}
+    ${STRUCTURE_SRCS}
+    ${UTIL_SRCS}
+)
 
 # Ejecutable que enlaza con la librería core
 add_executable(comparador ${COMPARADOR_SRC})
 target_link_libraries(comparador PRIVATE core)
+
+# Directorio de salida (prueba1)
+set_target_properties(comparador PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
