@@ -3,12 +3,17 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include "utils/io.h"
+
 #include "kmp.h"
-#include "utils/io.h" // asumo tienes funciones para leer carpetas y textos
+//#include "boyer_moore.h"
+//#include "rabin_karp.h"
+//#include "automata.h"
+//#include "suffix_array.h"
 
-using clock = std::chrono::high_resolution_clock;
+using HighResClock = std::chrono::high_resolution_clock;
 
-// Ejecuta KMP sobre un texto concatenado de varios documentos y mide tiempos
+// Ejecuta algoritmo sobre un texto concatenado de varios documentos y mide tiempos
 void buscarPatrones(const std::string &texto,
                     const std::vector<std::string> &nombresDoc,
                     const std::vector<int> &cortes)
@@ -27,12 +32,16 @@ void buscarPatrones(const std::string &texto,
         return;
     }
 
-    auto t0_total = clock::now();
+    auto t0_total = HighResClock::now();
     for (const auto &p : patrones)
     {
-        auto t0 = clock::now();
+        auto t0 = HighResClock::now();
         auto occs = kmpSearch(texto, p);
-        auto t1 = clock::now();
+        //auto occs = boyerMooreSearch(texto, p);
+        //auto occs = rabinKarpSearch(texto, p);
+        //auto occs = automataSearch(texto, p);
+        //auto occs = SUFFIX ARRAY SEARCH aun no implementada
+        auto t1 = HighResClock::now();
 
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
         std::cout << "\nPatrón: \"" << p << "\" → "
@@ -47,7 +56,7 @@ void buscarPatrones(const std::string &texto,
                       << offset << "\n";
         }
     }
-    auto t1_total = clock::now();
+    auto t1_total = HighResClock::now();
     auto total_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1_total - t0_total).count();
     std::cout << "\nTiempo total (todos patrones): " << total_ms << " ms\n";
 }
