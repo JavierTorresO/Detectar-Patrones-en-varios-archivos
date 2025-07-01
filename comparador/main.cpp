@@ -32,6 +32,9 @@ void buscarPatrones(const std::string &texto,
         return;
     }
 
+    // Construir suffix array una vez
+    //std::vector<int> suffixArray = construirSuffixArray(texto);
+
     auto t0_total = HighResClock::now();
     for (const auto &p : patrones)
     {
@@ -40,7 +43,7 @@ void buscarPatrones(const std::string &texto,
         //auto occs = boyerMooreSearch(texto, p);
         //auto occs = rabinKarpSearch(texto, p);
         //auto occs = automataSearch(texto, p);
-        //auto occs = SUFFIX ARRAY SEARCH aun no implementada
+        //auto occs = buscarConSuffixArray(texto, p, suffixArray);
         auto t1 = HighResClock::now();
 
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();

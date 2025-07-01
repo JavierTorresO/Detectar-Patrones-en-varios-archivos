@@ -48,16 +48,40 @@ Para comparar varios tiempos a la vez, este modo usa patrones predefinidos que s
 ```
 EJEMPLO DE EJECUCIÓN:
 === KMP ===
-  "dato": 3 ocurrencias en 2 ms
+  "datos": 3 ocurrencias en 2 ms
+  "procesamiento": 1 ocurrencia en 3 ms
+  "codigo": 0 ocurrencias en 1 ms
 
 === Boyer-Moore ===
-  "dato": 3 ocurrencias en 1 ms
+  "datos": 3 ocurrencias en 1 ms
+  "procesamiento": 1 ocurrencia en 2 ms
+  "codigo": 0 ocurrencias en 1 ms
 
 === Rabin-Karp ===
-  "dato": 3 ocurrencias en 2 ms
+  "datos": 3 ocurrencias en 4 ms
+  "procesamiento": 1 ocurrencia en 5 ms
+  "codigo": 0 ocurrencias en 2 ms
 
 === Autómata Finito ===
-  "dato": 3 ocurrencias en 1 ms
+  "datos": 3 ocurrencias en 1 ms
+  "procesamiento": 1 ocurrencia en 1 ms
+  "codigo": 0 ocurrencias en 1 ms
+
+=== Suffix Array ===
+
+Tiempo construcción: 1 ms
+
+Patrón: "datos" → 3 ocurrencias en 40 ms
+  • Posición absoluta en texto: 134
+  • Posición absoluta en texto: 820
+  • Posición absoluta en texto: 2011
+
+Patrón: "procesamiento" → 1 ocurrencia en 12 ms
+  • Posición absoluta en texto: 4523
+
+Patrón: "codigo" → 0 ocurrencias en 5 ms
+
+Tiempo total (todos patrones): 70 ms
 
 
 - Modo interactivo:
@@ -72,7 +96,7 @@ Ejm: por defecto está activado el KMP `#include "kmp.h"` -> `//#include "kmp.h"
 3.Cambiar la línea de búsqueda para llamar a la función correspondiente.
 Ejm: `auto occs = kmpSearch(texto, p);` -> `//auto occs = kmpSearch(texto, p);` comentar la antigua
      `//auto occs = rabinKarpSearch(texto, p);` -> `auto occs = rabinKarpSearcharch(texto, p);` descomentar la  deseada
-     
+!!Caso del Suffix Array tambien descomentar la linea 36 (donde se construye el suffix array)    
 
 ```bash
 ./bin/comparador
