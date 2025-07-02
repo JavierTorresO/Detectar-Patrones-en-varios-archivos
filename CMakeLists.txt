@@ -51,3 +51,10 @@ target_link_libraries(benchmark PRIVATE core)
 set_target_properties(benchmark PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
 )
+
+# Ejecutable experimental para estudios automatizados
+add_executable(experimental comparador/experimental_bench.cpp)
+target_link_libraries(experimental PRIVATE core)
+set_target_properties(experimental PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+)
