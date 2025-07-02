@@ -46,7 +46,8 @@ Un sistema completo de comparación de algoritmos de búsqueda de patrones en m�
 
 ```bash
 # Clonar el repositorio
-git clone <URL_REPOSITORIO>
+git clone https://github.com/JavierTorresO/Detectar-Patrones-en-varios-archivos.git
+
 cd Detectar-Patrones-en-varios-archivos
 
 # Compilar con CMake
