@@ -9,8 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-O2 -Wall -Wextra)
 
 # Incluir headers
-include_directories(core PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+include_directories(
+    ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/utils
     ${PROJECT_SOURCE_DIR}/algoritmos
     ${PROJECT_SOURCE_DIR}/estructuras
