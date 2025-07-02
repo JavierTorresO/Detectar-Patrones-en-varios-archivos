@@ -1,110 +1,203 @@
-# Búsqueda de Patrones en Documentos
+# 🔍 Sistema de Búsqueda de Patrones en Documentos
 
-Se puede buscar patrones de texto en múltiples documentos concatenados usando soluciones algoritmicas y estructurales.  
-Los documentos están concatenados con el símbolo `$` como separador, y el sistema informa en qué documento aparece cada patrón.
+Un sistema completo de comparación de algoritmos de búsqueda de patrones en múltiples documentos de texto, diseñado para estudios experimentales y análisis de rendimiento.
 
-## Estructura del proyecto
+## 📋 Características Principales
 
-- `comparador/` → Contiene los archivos principales `bench.cpp` y `main.cpp`(interactivo)
-- `algoritmos/` → Implementaciones de algoritmos de búsqueda
-- `estructuras/` → Implementación de soluciones basadas en estructuras
-- `utils/` → Funciones de lectura de archivos y manejo de cortes
-- `bin/` → Ejecutables generados
-- `scripts/build.sh` → Script para compilar
-- `datos/documentos/` → Archivos `.txt` individuales que actúan como documentos
-- `CMakeLists.txt`
+- **5 Algoritmos de Búsqueda**: KMP, Boyer-Moore, Rabin-Karp, Autómata Finito, Suffix Array
+- **Sistema Experimental Automatizado**: Variación automática de documentos y patrones
+- **Medición Precisa**: Tiempo de ejecución y uso de memoria con estadísticas
+- **Exportación de Datos**: Resultados en formato CSV para análisis posterior
+- **Generación Automática**: Patrones existentes y no existentes en el texto
+- **Múltiples Repeticiones**: 20 ejecuciones por experimento para resultados confiables
 
-# Restricción importante:
+## 🏗️ Estructura del Proyecto
 
-Este programa realiza comparaciones exactas carácter por carácter.
-Eso significa que distingue entre:
-- Letras con y sin tilde → `canción` ≠ `cancion`
-- Mayúsculas y minúsculas → `Hola` ≠ `hola`
+```
+📁 Detectar-Patrones-en-varios-archivos/
+├── 📁 comparador/
+│   ├── main.cpp              ← Modo interactivo (usuario ingresa patrones)
+│   ├── bench.cpp             ← Comparación básica con patrones fijos
+│   └── experimental_bench.cpp ← Sistema experimental automatizado ⭐
+├── 📁 algoritmos/
+│   ├── kmp.h/cpp             ← Algoritmo Knuth-Morris-Pratt
+│   ├── boyer_moore.h/cpp     ← Algoritmo Boyer-Moore
+│   ├── rabin_karp.h/cpp      ← Algoritmo Rabin-Karp
+│   └── automata.h/cpp        ← Autómata Finito Determinista
+├── 📁 estructuras/
+│   └── suffix_array.h/cpp    ← Suffix Array con búsqueda binaria
+├── 📁 utils/
+│   └── io.h/cpp              ← Lectura de archivos y manejo de documentos
+├── 📁 datos/documentos/      ← Archivos de texto para pruebas (D1.txt - D13.txt)
+├── 📁 bin/                   ← Ejecutables generados
+├── 📁 build/                 ← Archivos de compilación CMake
+└── resultados_experimentales.csv ← Resultados del estudio experimental
+```
 
-!!Si deseas hacer búsquedas insensibles a tildes o mayúsculas, debes aplicar una normalización previa al texto y a los patrones (No implementado en esta versión).
+## ⚙️ Compilación
 
+**Requisitos:**
 
-## Compilación
-Este proyecto usa [CMake](https://cmake.org/). Para compilarlo, ejecuta:
+- CMake 3.10+
+- Compilador C++17
+- Windows (MSVC/MinGW) o Linux (GCC/Clang)
+
+**Instrucciones:**
 
 ```bash
-git clone <https://github.com/JavierTorresO/Detectar-Patrones-en-varios-archivos>
-cd DetectarPatrones
-chmod +x scripts/build.sh
-./scripts/build.sh
+# Clonar el repositorio
+git clone <URL_REPOSITORIO>
+cd Detectar-Patrones-en-varios-archivos
+
+# Compilar con CMake
+cmake --build build
+
+# Los ejecutables se generan en bin/
 ```
-Esto creará los ejecutables dentro de "bin/":
-bin/
-├── comparador     ← para usar main.cpp
-├── benchmark      ← para usar bench.cpp
 
-## Ejecución
+**Ejecutables generados:**
 
-- Modo benchmark:
-Para comparar varios tiempos a la vez, este modo usa patrones predefinidos que son definidos en "patrones" dentro de la funcion main de `bench.cpp`. Este archivo ejecuta todos los algoritmos a la vez para poder comparar tiempos.
+- `bin/comparador.exe` - Modo interactivo
+- `bin/benchmark.exe` - Comparación básica
+- `bin/experimental.exe` - **Sistema experimental automatizado** ⭐
+
+## 🔬 Modos de Ejecución
+
+### 1. Modo Experimental (Recomendado)
+
+**Sistema automatizado para estudios científicos:**
+
+```bash
+./bin/experimental
+```
+
+**Características:**
+
+- ✅ Variación automática de documentos (3, 5, 8, 10, 13)
+- ✅ Variación automática de patrones (5, 10, 20, 30)
+- ✅ 20 repeticiones por experimento
+- ✅ Generación de patrones existentes y no existentes
+- ✅ Medición de tiempo (microsegundos) y memoria (KB)
+- ✅ Cálculo de estadísticas (promedio, desviación estándar)
+- ✅ Exportación automática a CSV
+
+**Ejemplo de salida:**
+
+```
+=== ESTUDIO EXPERIMENTAL AUTOMATIZADO ===
+
+Documentos disponibles: 13
+Texto total: 13213 caracteres
+
+--- Experimento con 3 documentos (4527 caracteres) ---
+
+Generando 5 patrones...
+  Ejecutando KMP con 5 patrones, 20 repeticiones..... Completado!
+  Ejecutando Boyer-Moore con 5 patrones, 20 repeticiones..... Completado!
+
+=== RESUMEN DE RESULTADOS EXPERIMENTALES ===
+Algoritmo      Docs    Patrones  Tamaño(KB)  Tiempo(ms)  Std(ms)   Mem(KB)   Ocurrencias
+-------------------------------------------------------------------------------------------
+KMP            3       5         4           0.04        0.01      0         21
+Boyer-Moore    3       5         4           0.04        0.05      0         21
+...
+
+Resultados exportados a: resultados_experimentales.csv
+```
+
+### 2. Modo Benchmark
+
+**Comparación rápida con patrones predefinidos:**
 
 ```bash
 ./bin/benchmark
 ```
-EJEMPLO DE EJECUCIÓN:
-=== KMP ===
-  "datos": 3 ocurrencias en 2 ms
-  "procesamiento": 1 ocurrencia en 3 ms
-  "codigo": 0 ocurrencias en 1 ms
 
-=== Boyer-Moore ===
-  "datos": 3 ocurrencias en 1 ms
-  "procesamiento": 1 ocurrencia en 2 ms
-  "codigo": 0 ocurrencias en 1 ms
+**Características:**
 
-=== Rabin-Karp ===
-  "datos": 3 ocurrencias en 4 ms
-  "procesamiento": 1 ocurrencia en 5 ms
-  "codigo": 0 ocurrencias en 2 ms
+- Patrones fijos definidos en el código
+- Medición de tiempo y memoria por algoritmo
+- Comparación directa entre todos los algoritmos
 
-=== Autómata Finito ===
-  "datos": 3 ocurrencias en 1 ms
-  "procesamiento": 1 ocurrencia en 1 ms
-  "codigo": 0 ocurrencias en 1 ms
+### 3. Modo Interactivo
 
-=== Suffix Array ===
-
-Tiempo construcción: 1 ms
-
-Patrón: "datos" → 3 ocurrencias en 40 ms
-  • Posición absoluta en texto: 134
-  • Posición absoluta en texto: 820
-  • Posición absoluta en texto: 2011
-
-Patrón: "procesamiento" → 1 ocurrencia en 12 ms
-  • Posición absoluta en texto: 4523
-
-Patrón: "codigo" → 0 ocurrencias en 5 ms
-
-Tiempo total (todos patrones): 70 ms
-
-
-- Modo interactivo:
-Carga todos los documentos en `datos/documentos/`, en este se te pide ingresar por teclado linea a linea que patrones quieres buscar y luego imprime en que documentos aparece cada patrón. 
-!!!El archivo main.cpp está diseñado para ejecutar solo un algoritmo de búsqueda a la vez.
-Para cambiar el algoritmo que se utiliza, debes editar manualmente el archivo y hacer lo siguiente:
-
-1.Descomentar el #include del algoritmo que deseas usar.
-Ejm: `//#include "rabin_karp.h"` -> `#include "rabin_karp.h"`
-2.Comentar los #include y la llamada de los demás algoritmos.
-Ejm: por defecto está activado el KMP `#include "kmp.h"` -> `//#include "kmp.h"`
-3.Cambiar la línea de búsqueda para llamar a la función correspondiente.
-Ejm: `auto occs = kmpSearch(texto, p);` -> `//auto occs = kmpSearch(texto, p);` comentar la antigua
-     `//auto occs = rabinKarpSearch(texto, p);` -> `auto occs = rabinKarpSearcharch(texto, p);` descomentar la  deseada
-!!Caso del Suffix Array tambien descomentar la linea 36 (donde se construye el suffix array)    
+**Entrada manual de patrones:**
 
 ```bash
 ./bin/comparador
 ```
-EJEMPLO DE EJECUCIÓN:
-Ingresa patrones (una línea c/u), luego Ctrl+D para buscar:
-*ingresar patrones linea por linea, luego CTRL+D para buscar
-Patrón: "bin" → 2 ocurrencias en 3 ms
-  • Doc 1 (“doc1.txt”) @ pos 34
-  • Doc 2 (“doc2.txt”) @ pos 12
-...
+
+**Características:**
+
+- Usuario ingresa patrones línea por línea
+- Muestra en qué documentos aparece cada patrón
+- Un solo algoritmo por ejecución (configurable en código)
+
+## 📊 Resultados Experimentales
+
+### Archivo CSV Generado
+
+El sistema experimental genera `resultados_experimentales.csv` con las siguientes columnas:
+
+| Campo                 | Descripción                                   |
+| --------------------- | --------------------------------------------- |
+| `Algoritmo`           | Nombre del algoritmo (KMP, Boyer-Moore, etc.) |
+| `Num_Documentos`      | Cantidad de documentos utilizados             |
+| `Num_Patrones`        | Cantidad de patrones buscados                 |
+| `Tamaño_Texto`        | Tamaño total del texto en caracteres          |
+| `Tiempo_Promedio_ms`  | Tiempo promedio de ejecución en milisegundos  |
+| `Desviacion_Std_ms`   | Desviación estándar del tiempo                |
+| `Memoria_Promedio_KB` | Memoria adicional utilizada en KB             |
+| `Total_Ocurrencias`   | Número total de coincidencias encontradas     |
+| `Repeticiones`        | Número de repeticiones realizadas (20)        |
+
+### Análisis de Rendimiento
+
+**Ranking de Velocidad (basado en resultados experimentales):**
+
+1. **🥇 Boyer-Moore** - Más rápido (0.02-0.35ms)
+2. **🥈 KMP** - Segundo lugar (0.04-0.43ms)
+3. **🥉 Automata** - Tercero (0.08-1.28ms)
+4. **4️⃣ Rabin-Karp** - Cuarto (0.12-1.57ms)
+5. **5️⃣ Suffix Array** - Quinto (0.85-3.38ms) \*
+
+_\*Suffix Array tiene overhead de construcción pero búsquedas muy rápidas_
+
+**Eficiencia de Memoria:**
+
+- Todos los algoritmos son muy eficientes (0-3 KB adicionales)
+- Boyer-Moore y KMP: 0 KB en la mayoría de casos
+- Automata: Ocasionalmente 1 KB extra
+
+## 🔧 Configuración del Estudio Experimental
+
+Para modificar los parámetros del experimento, edita `experimental_bench.cpp`:
+
+```cpp
+// Línea ~290
+std::vector<int> num_documentos_tests = {3, 5, 8, 10, 13};  // Documentos a probar
+std::vector<int> num_patrones_tests = {5, 10, 20, 30};      // Patrones por experimento
+int repeticiones = 20;                                       // Repeticiones por experimento
+```
+
+## 📈 Generación de Patrones
+
+El sistema genera automáticamente:
+
+- **70% patrones existentes**: Extraídos del texto real
+- **30% patrones no existentes**: Generados aleatoriamente
+- **Longitud**: 3-10 caracteres (configurable)
+
+## ⚠️ Consideraciones Importantes
+
+### Búsqueda Exacta
+
+- **Sensible a mayúsculas/minúsculas**: `Hola` ≠ `hola`
+- **Sensible a tildes**: `canción` ≠ `cancion`
+- **Sin normalización automática**: Se requiere preprocesamiento manual
+
+### Archivos de Datos
+
+- Los documentos se concatenan con separador `$`
+- Archivos disponibles: `D1.txt` a `D13.txt`
+- Tamaño total: ~13KB de texto de prueba
