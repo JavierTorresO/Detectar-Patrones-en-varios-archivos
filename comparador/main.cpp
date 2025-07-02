@@ -3,13 +3,13 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include "utils/io.h"
+#include "io.h"
 
 #include "kmp.h"
-//#include "boyer_moore.h"
-//#include "rabin_karp.h"
-//#include "automata.h"
-//#include "suffix_array.h"
+#include "boyer_moore.h"
+#include "rabin_karp.h"
+#include "automata.h"
+#include "suffix_array.h"
 
 using HighResClock = std::chrono::high_resolution_clock;
 
@@ -33,24 +33,50 @@ void buscarPatrones(const std::string &texto,
     }
 
     // Construir suffix array una vez
-    //std::vector<int> suffixArray = construirSuffixArray(texto);
+    std::vector<int> suffixArray = construirSuffixArray(texto);
 
     auto t0_total = HighResClock::now();
     for (const auto &p : patrones)
     {
+        std::cout << "\n=== Patrón: \"" << p << "\" ===\n";
+
+        // KMP
         auto t0 = HighResClock::now();
-        auto occs = kmpSearch(texto, p);
-        //auto occs = boyerMooreSearch(texto, p);
-        //auto occs = rabinKarpSearch(texto, p);
-        //auto occs = automataSearch(texto, p);
-        //auto occs = buscarConSuffixArray(texto, p, suffixArray);
+        auto occs_kmp = kmpSearch(texto, p);
         auto t1 = HighResClock::now();
+        auto ms_kmp = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "KMP: " << occs_kmp.size() << " ocurrencias en " << ms_kmp << " ms\n";
 
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "\nPatrón: \"" << p << "\" → "
-                  << occs.size() << " ocurrencias en " << ms << " ms\n";
+        // Boyer-Moore
+        t0 = HighResClock::now();
+        auto occs_bm = boyerMooreSearch(texto, p);
+        t1 = HighResClock::now();
+        auto ms_bm = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "Boyer-Moore: " << occs_bm.size() << " ocurrencias en " << ms_bm << " ms\n";
 
-        for (int pos : occs)
+        // Rabin-Karp
+        t0 = HighResClock::now();
+        auto occs_rk = rabinKarpSearch(texto, p);
+        t1 = HighResClock::now();
+        auto ms_rk = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "Rabin-Karp: " << occs_rk.size() << " ocurrencias en " << ms_rk << " ms\n";
+
+        // Autómata
+        t0 = HighResClock::now();
+        auto occs_auto = automataSearch(texto, p);
+        t1 = HighResClock::now();
+        auto ms_auto = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "Autómata: " << occs_auto.size() << " ocurrencias en " << ms_auto << " ms\n";
+
+        // Suffix Array
+        t0 = HighResClock::now();
+        auto occs_sa = buscarConSuffixArray(texto, p, suffixArray);
+        t1 = HighResClock::now();
+        auto ms_sa = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+        std::cout << "Suffix Array: " << occs_sa.size() << " ocurrencias en " << ms_sa << " ms\n";
+
+        // Mostrar posiciones usando KMP como referencia
+        for (int pos : occs_kmp)
         {
             int docId = obtenerDocumento(pos, cortes);
             int offset = (docId == 1 ? pos : pos - cortes[docId - 2]);

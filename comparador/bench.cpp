@@ -4,6 +4,7 @@
 #include <string>
 
 // Incluimos todos los headers de los algoritmos y estructuras
+#include "io.h"
 #include "kmp.h"
 #include "boyer_moore.h"
 #include "rabin_karp.h"
@@ -12,11 +13,7 @@
 
 using HRClock = std::chrono::high_resolution_clock;
 
-// Funcion helper para leer docs igual que en main
-extern std::string leerDocumentosDesdeCarpeta(
-    const std::string &, std::vector<std::string> &, std::vector<int> &);
-
-// Algoritmo 1: KMP        
+// Algoritmo 1: KMP
 void runKMP(const std::string &texto, const std::vector<std::string> &patrones)
 {
     std::cout << "=== KMP ===\n";
@@ -60,10 +57,10 @@ void runRabinKarp(const std::string &texto, const std::vector<std::string> &patr
 }
 
 // EXTRA: Algoritmo 4: DFA(Automata Finito Determinista)
-void runAutomata(const std::string& texto, const std::vector<std::string>& patrones)
+void runAutomata(const std::string &texto, const std::vector<std::string> &patrones)
 {
-    std::cout << "\n=== Autómata Finito ===\n";
-    for (const auto& p : patrones)
+    std::cout << "\n=== Automata Finito ===\n";
+    for (const auto &p : patrones)
     {
         auto t0 = HRClock::now();
         auto occ = automataSearch(texto, p);
@@ -85,21 +82,23 @@ void runSuffixArray(const std::string &texto,
     std::vector<int> suffixArray = construirSuffixArray(texto);
     auto t1_build = HRClock::now();
     auto build_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1_build - t0_build).count();
-    std::cout << "\nTiempo construcción: " << build_ms << " ms\n";
+    std::cout << "\nTiempo construccion: " << build_ms << " ms\n";
 
     // Buscar cada patrón
     auto t0_total = HRClock::now();
-    for (const auto &p : patrones) {
+    for (const auto &p : patrones)
+    {
         auto t0 = HRClock::now();
         auto occs = buscarConSuffixArray(texto, p, suffixArray);
         auto t1 = HRClock::now();
 
         auto us = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "\nPatrón: \"" << p << "\" → "
+        std::cout << "\nPatron: \"" << p << "\" contiene "
                   << occs.size() << " ocurrencias en " << us << " ms\n";
 
-        for (int pos : occs) {
-            std::cout << "  • Posición absoluta en texto: " << pos << "\n";
+        for (int pos : occs)
+        {
+            std::cout << "  Posicion absoluta en texto: " << pos << "\n";
         }
     }
 
@@ -127,7 +126,7 @@ int main()
     runAutomata(texto, patrones);
 
     // Ejecutar la estructura
-    runSuffixArray(texto, patrones); 
+    runSuffixArray(texto, patrones);
 
     return 0;
 }
