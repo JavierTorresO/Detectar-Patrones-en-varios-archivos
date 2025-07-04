@@ -79,3 +79,21 @@ int obtenerDocumento(int pos, const std::vector<int> &cortes)
     }
     return -1;
 }
+
+std::vector<std::string> cargarPatronesDesdeArchivo(const std::string& ruta) {
+    std::vector<std::string> patrones;
+    std::ifstream in(ruta);
+    if (!in.is_open()) {
+        std::cerr << "Error: No se pudo abrir el archivo " << ruta << "\n";
+        return patrones;
+    }
+
+    std::string linea;
+    while (std::getline(in, linea)) {
+        if (!linea.empty()) {
+            patrones.push_back(linea);
+        }
+    }
+
+    return patrones;
+}

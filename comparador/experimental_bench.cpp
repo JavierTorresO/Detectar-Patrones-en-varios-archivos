@@ -57,112 +57,31 @@ size_t getMemoryKB()
     return 0;
 }
 
-// Funcion para generar patrones aleatorios a partir del texto
-std::vector<std::string> generarPatrones(const std::string &texto, int num_patrones,
-                                         double porcentaje_existentes = 0.7,
-                                         int min_len = 3, int max_len = 10)
-{
-    std::vector<std::string> patrones;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    int patrones_existentes = static_cast<int>(num_patrones * porcentaje_existentes);
-    int patrones_no_existentes = num_patrones - patrones_existentes;
-
-    // Generar patrones existentes (substrings del texto)
-    std::uniform_int_distribution<> pos_dist(0, std::max(0, static_cast<int>(texto.size()) - max_len));
-    std::uniform_int_distribution<> len_dist(min_len, max_len);
-
-    for (int i = 0; i < patrones_existentes && !texto.empty(); ++i)
-    {
-        int pos = pos_dist(gen);
-        int len = std::min(len_dist(gen), static_cast<int>(texto.size()) - pos);
-        if (len > 0)
-        {
-            std::string patron = texto.substr(pos, len);
-            // Evitar patrones muy cortos o que solo contengan espacios
-            if (patron.size() >= min_len && patron.find_first_not_of(" \t\n\r") != std::string::npos)
-            {
-                patrones.push_back(patron);
-            }
-        }
-    }
-
-    // Generar patrones no existentes (aleatorios)
-    std::uniform_int_distribution<> char_dist(97, 122); // a-z
-    for (int i = 0; i < patrones_no_existentes; ++i)
-    {
-        int len = len_dist(gen);
-        std::string patron;
-        for (int j = 0; j < len; ++j)
-        {
-            patron += static_cast<char>(char_dist(gen));
-        }
-        // Agregar sufijo unico para asegurar que no existe
-        patron += "xyz123";
-        patrones.push_back(patron);
-    }
-
-    return patrones;
-}
-
 // Funcion para medir tiempo de ejecucion de un algoritmo
 std::pair<double, size_t> medirAlgoritmo(const std::string &algoritmo,
                                          const std::string &texto,
-                                         const std::vector<std::string> &patrones)
-{
+                                         const std::vector<std::string> &patrones) {
     size_t mem_inicial = getMemoryKB();
     auto inicio = HRClock::now();
 
-    // Ejecutar el algoritmo correspondiente
-    if (algoritmo == "KMP")
-    {
-        for (const auto &p : patrones)
-        {
-            kmpSearch(texto, p);
-        }
-    }
-    else if (algoritmo == "Boyer-Moore")
-    {
-        for (const auto &p : patrones)
-        {
-            boyerMooreSearch(texto, p);
-        }
-    }
-    else if (algoritmo == "Rabin-Karp")
-    {
-        for (const auto &p : patrones)
-        {
-            rabinKarpSearch(texto, p);
-        }
-    }
-    else if (algoritmo == "Automata")
-    {
-        for (const auto &p : patrones)
-        {
-            automataSearch(texto, p);
-        }
-    }
-    else if (algoritmo == "Suffix-Array")
-    {
+    if (algoritmo == "KMP") {
+        for (const auto &p : patrones) kmpSearch(texto, p);
+    } else if (algoritmo == "Boyer-Moore") {
+        for (const auto &p : patrones) boyerMooreSearch(texto, p);
+    } else if (algoritmo == "Rabin-Karp") {
+        for (const auto &p : patrones) rabinKarpSearch(texto, p);
+    } else if (algoritmo == "Automata") {
+        for (const auto &p : patrones) automataSearch(texto, p);
+    } else if (algoritmo == "Suffix-Array") {
         auto suffixArray = construirSuffixArray(texto);
-        for (const auto &p : patrones)
-        {
-            buscarConSuffixArray(texto, p, suffixArray);
-        }
+        for (const auto &p : patrones) buscarConSuffixArray(texto, p, suffixArray);
     }
 
     auto fin = HRClock::now();
     size_t mem_final = getMemoryKB();
 
     double tiempo_ms = std::chrono::duration_cast<std::chrono::microseconds>(fin - inicio).count() / 1000.0;
-
-    // Corregir calculo de memoria para evitar overflow
-    size_t memoria_extra = 0;
-    if (mem_final >= mem_inicial)
-    {
-        memoria_extra = mem_final - mem_inicial;
-    }
+    size_t memoria_extra = (mem_final >= mem_inicial) ? (mem_final - mem_inicial) : 0;
 
     return {tiempo_ms, memoria_extra};
 }
@@ -172,74 +91,39 @@ ExperimentResult realizarExperimento(const std::string &algoritmo,
                                      const std::string &texto,
                                      const std::vector<std::string> &patrones,
                                      int num_documentos,
-                                     int repeticiones = 20)
-{
+                                     int repeticiones = 20) {
     std::vector<double> tiempos;
     std::vector<size_t> memorias;
 
     std::cout << "  Ejecutando " << algoritmo << " con " << patrones.size()
               << " patrones, " << repeticiones << " repeticiones..." << std::flush;
 
-    for (int i = 0; i < repeticiones; ++i)
-    {
+    for (int i = 0; i < repeticiones; ++i) {
         auto [tiempo, memoria] = medirAlgoritmo(algoritmo, texto, patrones);
         tiempos.push_back(tiempo);
         memorias.push_back(memoria);
 
-        if ((i + 1) % 5 == 0)
-        {
-            std::cout << "." << std::flush;
-        }
+        if ((i + 1) % 5 == 0) std::cout << "." << std::flush;
     }
 
-    // Calcular estadisticas
     double tiempo_promedio = std::accumulate(tiempos.begin(), tiempos.end(), 0.0) / tiempos.size();
     double suma_cuadrados = 0.0;
-    for (double t : tiempos)
-    {
-        suma_cuadrados += (t - tiempo_promedio) * (t - tiempo_promedio);
-    }
+    for (double t : tiempos) suma_cuadrados += (t - tiempo_promedio) * (t - tiempo_promedio);
     double desviacion_std = std::sqrt(suma_cuadrados / tiempos.size());
-
     size_t memoria_promedio = std::accumulate(memorias.begin(), memorias.end(), 0ULL) / memorias.size();
 
-    // Contar ocurrencias totales (usando la primera medicion)
     int total_ocurrencias = 0;
-    if (algoritmo == "KMP")
-    {
-        for (const auto &p : patrones)
-        {
-            total_ocurrencias += kmpSearch(texto, p).size();
-        }
-    }
-    else if (algoritmo == "Boyer-Moore")
-    {
-        for (const auto &p : patrones)
-        {
-            total_ocurrencias += boyerMooreSearch(texto, p).size();
-        }
-    }
-    else if (algoritmo == "Rabin-Karp")
-    {
-        for (const auto &p : patrones)
-        {
-            total_ocurrencias += rabinKarpSearch(texto, p).size();
-        }
-    }
-    else if (algoritmo == "Automata")
-    {
-        for (const auto &p : patrones)
-        {
-            total_ocurrencias += automataSearch(texto, p).size();
-        }
-    }
-    else if (algoritmo == "Suffix-Array")
-    {
+    if (algoritmo == "KMP") {
+        for (const auto &p : patrones) total_ocurrencias += kmpSearch(texto, p).size();
+    } else if (algoritmo == "Boyer-Moore") {
+        for (const auto &p : patrones) total_ocurrencias += boyerMooreSearch(texto, p).size();
+    } else if (algoritmo == "Rabin-Karp") {
+        for (const auto &p : patrones) total_ocurrencias += rabinKarpSearch(texto, p).size();
+    } else if (algoritmo == "Automata") {
+        for (const auto &p : patrones) total_ocurrencias += automataSearch(texto, p).size();
+    } else if (algoritmo == "Suffix-Array") {
         auto suffixArray = construirSuffixArray(texto);
-        for (const auto &p : patrones)
-        {
-            total_ocurrencias += buscarConSuffixArray(texto, p, suffixArray).size();
-        }
+        for (const auto &p : patrones) total_ocurrencias += buscarConSuffixArray(texto, p, suffixArray).size();
     }
 
     std::cout << " Completado!\n";
@@ -257,22 +141,17 @@ ExperimentResult realizarExperimento(const std::string &algoritmo,
 }
 
 // Funcion para exportar resultados a CSV
-void exportarResultados(const std::vector<ExperimentResult> &resultados, const std::string &archivo)
-{
+void exportarResultados(const std::vector<ExperimentResult> &resultados, const std::string &archivo) {
     std::ofstream file(archivo);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         std::cerr << "Error: No se pudo crear el archivo " << archivo << std::endl;
         return;
     }
 
-    // Cabecera CSV
     file << "Algoritmo,Num_Documentos,Num_Patrones,Tamaño_Texto,Tiempo_Promedio_ms,"
          << "Desviacion_Std_ms,Memoria_Promedio_KB,Total_Ocurrencias,Repeticiones\n";
 
-    // Datos
-    for (const auto &resultado : resultados)
-    {
+    for (const auto &resultado : resultados) {
         file << std::fixed << std::setprecision(4)
              << resultado.algoritmo << ","
              << resultado.num_documentos << ","
@@ -290,8 +169,7 @@ void exportarResultados(const std::vector<ExperimentResult> &resultados, const s
 }
 
 // Funcion para mostrar resumen de resultados
-void mostrarResumen(const std::vector<ExperimentResult> &resultados)
-{
+void mostrarResumen(const std::vector<ExperimentResult> &resultados) {
     std::cout << "\n=== RESUMEN DE RESULTADOS EXPERIMENTALES ===\n";
     std::cout << std::left << std::setw(15) << "Algoritmo"
               << std::setw(8) << "Docs"
@@ -303,8 +181,7 @@ void mostrarResumen(const std::vector<ExperimentResult> &resultados)
               << std::setw(12) << "Ocurrencias" << std::endl;
     std::cout << std::string(95, '-') << std::endl;
 
-    for (const auto &r : resultados)
-    {
+    for (const auto &r : resultados) {
         std::cout << std::left << std::setw(15) << r.algoritmo
                   << std::setw(8) << r.num_documentos
                   << std::setw(10) << r.num_patrones
@@ -316,11 +193,9 @@ void mostrarResumen(const std::vector<ExperimentResult> &resultados)
     }
 }
 
-int main()
-{
+int main() {
     std::cout << "=== ESTUDIO EXPERIMENTAL AUTOMATIZADO ===\n\n";
 
-    // Cargar todos los documentos disponibles
     std::vector<std::string> nombres;
     std::vector<int> cortes;
     std::string texto_completo = leerDocumentosDesdeCarpeta("datos/documentos/", nombres, cortes);
@@ -328,42 +203,39 @@ int main()
     std::cout << "Documentos disponibles: " << nombres.size() << std::endl;
     std::cout << "Texto total: " << texto_completo.size() << " caracteres\n\n";
 
-    // Configuracion del experimento
     std::vector<std::string> algoritmos = {"KMP", "Boyer-Moore", "Rabin-Karp", "Automata", "Suffix-Array"};
-    std::vector<int> num_documentos_tests = {3, 5, 8, 10, 13}; // Usar diferentes cantidades de documentos
-    std::vector<int> num_patrones_tests = {5, 10, 20, 30};     // Diferentes cantidades de patrones
+    std::vector<int> num_documentos_tests = {10, 20, 30, 40}; // Documentos a combinar
+    std::vector<std::string> archivos_patrones = {
+        "datos/patrones/patrones_20.txt",
+        "datos/patrones/patrones_40.txt",
+        "datos/patrones/patrones_60.txt",
+        "datos/patrones/patrones_80.txt",
+        "datos/patrones/patrones_100.txt"
+    };
     int repeticiones = 20;
 
     std::vector<ExperimentResult> todos_resultados;
 
-    // Ejecutar experimentos
-    for (int num_docs : num_documentos_tests)
-    {
-        if (num_docs > static_cast<int>(nombres.size()))
-            continue;
+    for (int num_docs : num_documentos_tests) {
+        if (num_docs > static_cast<int>(nombres.size())) continue;
 
-        // Crear texto con los primeros num_docs documentos
         std::string texto_experimento;
-        for (int i = 0; i < num_docs; ++i)
-        {
-            if (i < static_cast<int>(cortes.size()) - 1)
-            {
+        for (int i = 0; i < num_docs; ++i) {
+            if (i < static_cast<int>(cortes.size()) - 1) {
                 int inicio = (i == 0) ? 0 : cortes[i];
                 int fin = cortes[i + 1];
                 texto_experimento += texto_completo.substr(inicio, fin - inicio);
             }
         }
 
-        std::cout << "\n--- Experimento con " << num_docs << " documentos ("
+        std::cout << "\n--- Experimento con " << num_docs << " documentos (" 
                   << texto_experimento.size() << " caracteres) ---\n";
 
-        for (int num_patrones : num_patrones_tests)
-        {
-            std::cout << "\nGenerando " << num_patrones << " patrones...\n";
-            auto patrones = generarPatrones(texto_experimento, num_patrones);
+        for (const std::string& ruta_patrones : archivos_patrones) {
+            std::vector<std::string> patrones = cargarPatronesDesdeArchivo(ruta_patrones);
+            std::cout << "Usando archivo de patrones: " << ruta_patrones << " (" << patrones.size() << " patrones)\n";
 
-            for (const auto &algoritmo : algoritmos)
-            {
+            for (const auto &algoritmo : algoritmos) {
                 auto resultado = realizarExperimento(algoritmo, texto_experimento,
                                                      patrones, num_docs, repeticiones);
                 todos_resultados.push_back(resultado);
@@ -371,10 +243,7 @@ int main()
         }
     }
 
-    // Mostrar resumen
     mostrarResumen(todos_resultados);
-
-    // Exportar resultados
     exportarResultados(todos_resultados, "resultados_experimentales.csv");
 
     std::cout << "\n=== EXPERIMENTO COMPLETADO ===\n";

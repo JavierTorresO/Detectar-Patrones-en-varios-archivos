@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <iostream>
+
 
 // Lee todos los archivos .txt desde una carpeta, los concatena con '$'
 // Guarda en 'nombresDoc' los nombres de los archivos (documentos)
@@ -18,5 +21,8 @@ std::string concatenarDocumentosSeleccionados(const std::string &carpeta, const 
 
 // Dado una posición en el texto concatenado, indica a qué documento pertenece
 int obtenerDocumento(int pos, const std::vector<int> &cortes);
+
+//cargar patrones desde un txt
+std::vector<std::string> cargarPatronesDesdeArchivo(const std::string& ruta);
 
 #endif
