@@ -206,11 +206,11 @@ int main() {
     std::vector<std::string> algoritmos = {"KMP", "Boyer-Moore", "Rabin-Karp", "Automata", "Suffix-Array"};
     std::vector<int> num_documentos_tests = {10, 20, 30, 40}; // Documentos a combinar
     std::vector<std::string> archivos_patrones = {
-        "datos/patrones/patrones_20.txt",
-        "datos/patrones/patrones_40.txt",
-        "datos/patrones/patrones_60.txt",
-        "datos/patrones/patrones_80.txt",
-        "datos/patrones/patrones_100.txt"
+        "datos/patrones/patrones_50.txt",
+        "datos/patrones/patrones_100.txt",
+        "datos/patrones/patrones_150.txt",
+        "datos/patrones/patrones_200.txt",
+        "datos/patrones/patrones_250.txt"
     };
     int repeticiones = 20;
 
