@@ -178,8 +178,11 @@ std::tuple<double, size_t, int> medirAlgoritmo(const std::string &algoritmo,
     }
     else if (algoritmo == "Automata")
     {
-        // SALTANDO AUTOMATA - CAUSA SEGMENTATION FAULT
-        return {0.001, 1, 1}; // Tiempo minimo para evitar divisiones por cero
+        // AUTOMATA CORREGIDO - Probando la corrección
+        for (const auto &p : patrones)
+        {
+            automataSearch(texto, p);
+        }
     }
     else if (algoritmo == "Suffix-Array")
     {
@@ -206,8 +209,7 @@ std::tuple<double, size_t, int> medirAlgoritmo(const std::string &algoritmo,
         memoria_extra = 0; // No hubo aumento significativo
     }
 
-    // Si no hay diferencia medible, usar estimacion basica por algoritmo
-    if (memoria_extra == 0)
+    // Si no hay diferencia medible, usar estimacion basica por algoritmo        if (memoria_extra == 0)
     {
         if (algoritmo == "Suffix-Array")
         {
@@ -215,7 +217,7 @@ std::tuple<double, size_t, int> medirAlgoritmo(const std::string &algoritmo,
         }
         else if (algoritmo == "Automata")
         {
-            memoria_extra = 0; // Automata deshabilitado
+            memoria_extra = patrones.size() * 10 / 1024 + 1; // Automata: DFA por patron
         }
         else
         {
@@ -286,7 +288,10 @@ ExperimentResult realizarExperimento(const std::string &algoritmo,
     }
     else if (algoritmo == "Automata")
     {
-        total_ocurrencias = 0; // Automata deshabilitado
+        for (const auto &p : patrones)
+        {
+            total_ocurrencias += automataSearch(texto, p).size();
+        }
     }
     else if (algoritmo == "Suffix-Array")
     {
