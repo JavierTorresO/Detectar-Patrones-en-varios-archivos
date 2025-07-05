@@ -51,7 +51,7 @@ void runKMP(const std::string &texto, const std::vector<std::string> &patrones)
         auto t1 = HRClock::now();
         size_t mem_fin_p = getMemoryKB();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "  \"" << p << "\": " << occ.size() << " en " << ms << " ms";
+        std::cout << "  \"" << p << "\": " << occ.size() << " ocurrencias en " << ms << " ms";
         if (i == 0)
             std::cout << ", Memoria estimada: " << (mem_fin_p - mem_ini_p) << " KB";
         std::cout << "\n";
@@ -79,7 +79,7 @@ void runBoyerMoore(const std::string &texto, const std::vector<std::string> &pat
         auto t1 = HRClock::now();
         size_t mem_fin_p = getMemoryKB();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "  \"" << p << "\": " << occ.size() << " en " << ms << " ms";
+        std::cout << "  \"" << p << "\": " << occ.size() << " ocurrencias en " << ms << " ms";
         if (i == 0)
             std::cout << ", Memoria estimada: " << (mem_fin_p - mem_ini_p) << " KB";
         std::cout << "\n";
@@ -107,7 +107,7 @@ void runRabinKarp(const std::string &texto, const std::vector<std::string> &patr
         auto t1 = HRClock::now();
         size_t mem_fin_p = getMemoryKB();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "  \"" << p << "\": " << occ.size() << " en " << ms << " ms";
+        std::cout << "  \"" << p << "\": " << occ.size() << " ocurrencias en " << ms << " ms";
         if (i == 0)
             std::cout << ", Memoria estimada: " << (mem_fin_p - mem_ini_p) << " KB";
         std::cout << "\n";
@@ -135,7 +135,7 @@ void runAutomata(const std::string &texto, const std::vector<std::string> &patro
         auto t1 = HRClock::now();
         size_t mem_fin_p = getMemoryKB();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "  \"" << p << "\": " << occ.size() << " en " << ms << " ms";
+        std::cout << "  \"" << p << "\": " << occ.size() << " ocurrencias en " << ms << " ms";
         if (i == 0)
             std::cout << ", Memoria estimada: " << (mem_fin_p - mem_ini_p) << " KB";
         std::cout << "\n";
@@ -170,7 +170,7 @@ void runSuffixArray(const std::string &texto, const std::vector<std::string> &pa
         auto occs = buscarConSuffixArray(texto, p, suffixArray);
         auto t1 = HRClock::now();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-        std::cout << "  \"" << p << "\": " << occs.size() << " en " << ms << " ms\n";
+        std::cout << "  \"" << p << "\": " << occs.size() << " ocurrencias en " << ms << " ms\n";
     }
     auto t1_busqueda = HRClock::now();
 
@@ -190,9 +190,8 @@ int main()
 
     std::cout << "Texto cargado: " << texto.size() << " caracteres, " << nombres.size() << " documentos\n";
 
-    // Definir patrones a leer de los archivos (Se dejan preestablecidos los patrones aqui)
-    std::vector<std::string> patrones = {
-        "bin", "datos", "busqueda", "criptograficas"};
+    // Definir patrones a leer de los archivos 
+    std::vector<std::string> patrones = cargarPatronesDesdeArchivo("datos/patrones/patrones_50.txt");
 
     // Ejecutar cada algoritmo
     runKMP(texto, patrones);
