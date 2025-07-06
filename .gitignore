@@ -1,2 +1,24 @@
 # Ignorar la carpeta de build generada por CMake/Ninja
 build/
+
+# Ignorar ejecutables generados
+bin/
+*.exe
+
+# Ignorar resultados experimentales (se generan automaticamente)
+resultados_experimentales.csv
+
+# Ignorar archivos temporales del sistema
+*.tmp
+*.log
+
+# Ignorar archivos de respaldo
+*~
+*.bak
+README_OLD.md
+
+# Ignorar archivos de IDE/Editor
+.vscode/
+.vs/
+*.suo
+*.user
