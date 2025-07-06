@@ -1,1 +1,17 @@
-Los algoritmos de busqueda de patrones son fundamentales en ciencias de la computacion. El algoritmo KMP utiliza una tabla de prefijos para optimizar la busqueda. Boyer-Moore realiza comparaciones desde el final del patron hacia el inicio. Rabin-Karp usa funciones hash para comparar patrones de forma eficiente. Los automatas finitos deterministicos construyen una maquina de estados para reconocer patrones. Las estructuras de datos como suffix arrays permiten busquedas rapidas en textos grandes. La complejidad temporal varia segun el algoritmo utilizado. El espacio de memoria tambien es una consideracion importante. Los experimentos deben considerar diferentes tamaños de entrada. La implementacion correcta de estos algoritmos requiere atencion a los detalles. Los casos de prueba deben incluir patrones existentes y no existentes en el texto. La medicion de tiempos debe ser precisa y repetible. Los resultados experimentales permiten comparar la eficiencia de diferentes enfoques. La optimizacion de memoria es crucial para textos muy grandes. Los algoritmos de busqueda han evolucionado considerablemente en las ultimas decadas.
+Cuentan que un hombre compró a una muchacha por cuatro mil denarios. Un día la miró y echó a llorar. La muchacha le preguntó por qué lloraba; él respondió:
+
+-Tienes tan bellos ojos que me olvido de adorar a Dios.
+
+Cuando quedó sola, la muchacha se arrancó los ojos. Al verla en ese estado el hombre se afligió y le dijo:
+
+-¿Por qué te has maltratado así? Has disminuido tu valor.
+
+Ella le respondió:
+
+-No quiero que haya nada en mí que te aparte de adorar a Dios.
+
+A la noche, el hombre oyó en sueños una voz que le decía:
+
+-La muchacha disminuyó su valor para ti, pero lo aumentó para nosotros y te la hemos tomado.
+
+Al despertar, encontró cuatro mil denarios bajo la almohada. La muchacha estaba muerta.
