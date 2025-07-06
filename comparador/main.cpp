@@ -18,7 +18,7 @@ void buscarPatrones(const std::string &texto,
                     const std::vector<std::string> &nombresDoc,
                     const std::vector<int> &cortes)
 {
-    std::cout << "Ingresa patrones (una línea c/u), luego Ctrl+D para buscar:\n";
+    std::cout << "Ingresa patrones (una linea c/u), luego Ctrl+D para buscar:\n";
     std::vector<std::string> patrones;
     std::string pat;
     while (std::getline(std::cin, pat))
@@ -28,7 +28,7 @@ void buscarPatrones(const std::string &texto,
     }
     if (patrones.empty())
     {
-        std::cerr << "No se ingresó ningún patrón.\n";
+        std::cerr << "No se ingresó ningun patron.\n";
         return;
     }
 
@@ -38,7 +38,7 @@ void buscarPatrones(const std::string &texto,
     auto t0_total = HighResClock::now();
     for (const auto &p : patrones)
     {
-        std::cout << "\n=== Patrón: \"" << p << "\" ===\n";
+        std::cout << "\n=== Patron: \"" << p << "\" ===\n";
 
         // KMP
         auto t0 = HighResClock::now();
