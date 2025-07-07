@@ -430,9 +430,9 @@ int main()
     std::cout << "Documentos disponibles: " << nombres.size() << std::endl;
     std::cout << "Texto total: " << texto_completo.size() << " caracteres\n\n";
 
-    // Configuracion del experimento (OPTIMIZADA)
+    // Configuracion del experimento (ACTUALIZADA para usar todos los documentos)
     std::vector<std::string> algoritmos = {"KMP", "Boyer-Moore", "Rabin-Karp", "Automata", "Suffix-Array"};
-    std::vector<int> num_documentos_tests = {3, 5, 8, 10, 13};
+    std::vector<int> num_documentos_tests = {5, 10, 15, 20, 25, 30, 35, 40, 45, 50};
     std::vector<std::string> archivos_patrones = {"patrones_50.txt", "patrones_100.txt", "patrones_150.txt", "patrones_200.txt", "patrones_250.txt"};
     int repeticiones = 20;
 
