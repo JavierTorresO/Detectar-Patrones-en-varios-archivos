@@ -1,40 +1,41 @@
-# 🔍 Sistema de Búsqueda de Patrones en Documentos
+# Sistema de Búsqueda de Patrones en Documentos
 
 Un sistema completo de comparación de algoritmos de búsqueda de patrones en múltiples documentos de texto, diseñado para estudios experimentales y análisis de rendimiento.
 
-## 📋 Características Principales
+## Características Principales
 
 - **5 Algoritmos de Búsqueda**: KMP, Boyer-Moore, Rabin-Karp, Autómata Finito, Suffix Array
 - **Sistema Experimental Automatizado**: Variación automática de documentos y patrones
 - **Medición Precisa**: Tiempo de ejecución y uso de memoria con estadísticas
 - **Exportación de Datos**: Resultados en formato CSV para análisis posterior
-- **Generación Automática**: Patrones existentes y no existentes en el texto
+- **Carga de Patrones desde Archivos**: Patrones predefinidos desde archivos TXT para resultados reproducibles
 - **Múltiples Repeticiones**: 20 ejecuciones por experimento para resultados confiables
 
-## 🏗️ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
-📁 Detectar-Patrones-en-varios-archivos/
-├── 📁 comparador/
+Detectar-Patrones-en-varios-archivos/
+├── comparador/
 │   ├── main.cpp              ← Modo interactivo (usuario ingresa patrones)
 │   ├── bench.cpp             ← Comparación básica con patrones fijos
-│   └── experimental_bench.cpp ← Sistema experimental automatizado ⭐
-├── 📁 algoritmos/
+│   └── experimental_bench.cpp ← Sistema experimental automatizado (PRINCIPAL)
+├── algoritmos/
 │   ├── kmp.h/cpp             ← Algoritmo Knuth-Morris-Pratt
 │   ├── boyer_moore.h/cpp     ← Algoritmo Boyer-Moore
 │   ├── rabin_karp.h/cpp      ← Algoritmo Rabin-Karp
 │   └── automata.h/cpp        ← Autómata Finito Determinista
-├── 📁 estructuras/
+├── estructuras/
 │   └── suffix_array.h/cpp    ← Suffix Array con búsqueda binaria
-├── 📁 utils/
+├── utils/
 │   └── io.h/cpp              ← Lectura de archivos y manejo de documentos
-├── 📁 datos/documentos/      ← Archivos de texto para pruebas (D1.txt - D13.txt)
-├── 📁 bin/                   ← Ejecutables generados
-├── 📁 build/                 ← Archivos de compilación CMake
+├── datos/documentos/         ← Archivos de texto para pruebas (D1.txt - D50.txt)
+├── datos/patrones/           ← Archivos de patrones predefinidos
+├── bin/                      ← Ejecutables generados
+├── build/                    ← Archivos de compilación CMake
 └── resultados_experimentales.csv ← Resultados del estudio experimental
 ```
 
-## ⚙️ Compilación
+## Compilación
 
 **Requisitos:**
 
@@ -60,9 +61,9 @@ cmake --build build
 
 - `bin/comparador.exe` - Modo interactivo
 - `bin/benchmark.exe` - Comparación básica
-- `bin/experimental.exe` - **Sistema experimental automatizado** ⭐
+- `bin/experimental.exe` - Sistema experimental automatizado (PRINCIPAL)
 
-## 🔬 Modos de Ejecución
+## Modos de Ejecución
 
 ### 1. Modo Experimental (Recomendado)
 
@@ -74,33 +75,34 @@ cmake --build build
 
 **Características:**
 
-- ✅ Variación automática de documentos (3, 5, 8, 10, 13)
-- ✅ Variación automática de patrones (5, 10, 20, 30)
-- ✅ 20 repeticiones por experimento
-- ✅ Generación de patrones existentes y no existentes
-- ✅ Medición de tiempo (microsegundos) y memoria (KB)
-- ✅ Cálculo de estadísticas (promedio, desviación estándar)
-- ✅ Exportación automática a CSV
+- Variación automática de documentos (5, 10, 15, 20, 25, 30, 35, 40, 45, 50)
+- Variación automática de patrones (50, 100, 150, 200, 250) cargados desde archivos
+- 20 repeticiones por experimento
+- Patrones predefinidos desde archivos TXT para resultados reproducibles
+- Medición de tiempo (milisegundos) y memoria (KB)
+- Cálculo de estadísticas (promedio, desviación estándar)
+- Exportación automática a CSV
 
 **Ejemplo de salida:**
 
 ```
 === ESTUDIO EXPERIMENTAL AUTOMATIZADO ===
 
-Documentos disponibles: 13
-Texto total: 13213 caracteres
+Documentos disponibles: 50
+Texto total: 125430 caracteres
 
---- Experimento con 3 documentos (4527 caracteres) ---
+--- Experimento con 5 documentos (12543 caracteres) ---
 
-Generando 5 patrones...
-  Ejecutando KMP con 5 patrones, 20 repeticiones..... Completado!
-  Ejecutando Boyer-Moore con 5 patrones, 20 repeticiones..... Completado!
+Cargando patrones desde datos/patrones/patrones_50.txt...
+  Cargados 50 patrones desde patrones_50.txt
+  Ejecutando KMP con 50 patrones..... Completado!
+  Ejecutando Boyer-Moore con 50 patrones..... Completado!
 
 === RESUMEN DE RESULTADOS EXPERIMENTALES ===
 Algoritmo      Docs    Patrones  Tamaño(KB)  Tiempo(ms)  Std(ms)   Mem(KB)   Ocurrencias
 -------------------------------------------------------------------------------------------
-KMP            3       5         4           0.04        0.01      0         21
-Boyer-Moore    3       5         4           0.04        0.05      0         21
+KMP            5       50        12          0.45        0.03      1         127
+Boyer-Moore    5       50        12          0.32        0.04      1         127
 ...
 
 Resultados exportados a: resultados_experimentales.csv
@@ -131,10 +133,33 @@ Resultados exportados a: resultados_experimentales.csv
 **Características:**
 
 - Usuario ingresa patrones línea por línea
+- Finaliza con Ctrl+D (Windows: Ctrl+Z + Enter)
 - Muestra en qué documentos aparece cada patrón
-- Un solo algoritmo por ejecución (configurable en código)
+- Ejecuta todos los algoritmos y compara resultados
 
-## 📊 Resultados Experimentales
+**Ejemplo de uso:**
+
+```bash
+./bin/comparador
+
+Ingresa patrones (una línea c/u), luego Ctrl+D para buscar:
+datos
+algoritmo
+patron
+[Ctrl+D]
+
+=== Patron: "datos" ===
+KMP: 8 ocurrencias en 2 ms
+Boyer-Moore: 8 ocurrencias en 1 ms
+Rabin-Karp: 8 ocurrencias en 3 ms
+Autómata: 8 ocurrencias en 1 ms
+Suffix Array: 8 ocurrencias en 0 ms
+  • Doc 1 ("D1.txt") @ pos 45
+  • Doc 2 ("D2.txt") @ pos 123
+  ...
+```
+
+## Resultados Experimentales
 
 ### Archivo CSV Generado
 
@@ -144,8 +169,8 @@ El sistema experimental genera `resultados_experimentales.csv` con las siguiente
 | --------------------- | --------------------------------------------- |
 | `Algoritmo`           | Nombre del algoritmo (KMP, Boyer-Moore, etc.) |
 | `Num_Documentos`      | Cantidad de documentos utilizados             |
-| `Num_Patrones`        | Cantidad de patrones buscados                 |
-| `Tamaño_Texto`        | Tamaño total del texto en caracteres          |
+| `Patrones_Cargados`   | Cantidad de patrones cargados desde archivo   |
+| `Tamaño_Texto_Chars`  | Tamaño total del texto en caracteres          |
 | `Tiempo_Promedio_ms`  | Tiempo promedio de ejecución en milisegundos  |
 | `Desviacion_Std_ms`   | Desviación estándar del tiempo                |
 | `Memoria_Promedio_KB` | Memoria adicional utilizada en KB             |
@@ -156,40 +181,32 @@ El sistema experimental genera `resultados_experimentales.csv` con las siguiente
 
 **Ranking de Velocidad (basado en resultados experimentales):**
 
-1. **🥇 Boyer-Moore** - Más rápido (0.02-0.35ms)
-2. **🥈 KMP** - Segundo lugar (0.04-0.43ms)
-3. **🥉 Automata** - Tercero (0.08-1.28ms)
-4. **4️⃣ Rabin-Karp** - Cuarto (0.12-1.57ms)
-5. **5️⃣ Suffix Array** - Quinto (0.85-3.38ms) \*
-
-_\*Suffix Array tiene overhead de construcción pero búsquedas muy rápidas_
-
-**Eficiencia de Memoria:**
-
-- Todos los algoritmos son muy eficientes (0-3 KB adicionales)
-- Boyer-Moore y KMP: 0 KB en la mayoría de casos
-- Automata: Ocasionalmente 1 KB extra
-
-## 🔧 Configuración del Estudio Experimental
+## Configuración del Estudio Experimental
 
 Para modificar los parámetros del experimento, edita `experimental_bench.cpp`:
 
 ```cpp
-// Línea ~290
-std::vector<int> num_documentos_tests = {3, 5, 8, 10, 13};  // Documentos a probar
-std::vector<int> num_patrones_tests = {5, 10, 20, 30};      // Patrones por experimento
-int repeticiones = 20;                                       // Repeticiones por experimento
+// Líneas ~430-435
+std::vector<int> num_documentos_tests = {5, 10, 15, 20, 25, 30, 35, 40, 45, 50};
+std::vector<std::string> archivos_patrones = {"patrones_50.txt", "patrones_100.txt",
+                                              "patrones_150.txt", "patrones_200.txt",
+                                              "patrones_250.txt"};
+int repeticiones = 20;
 ```
 
-## 📈 Generación de Patrones
+## Archivos de Patrones
 
-El sistema genera automáticamente:
+El sistema utiliza archivos predefinidos de patrones ubicados en `datos/patrones/`:
 
-- **70% patrones existentes**: Extraídos del texto real
-- **30% patrones no existentes**: Generados aleatoriamente
-- **Longitud**: 3-10 caracteres (configurable)
+- `patrones_50.txt` - 50 patrones predefinidos
+- `patrones_100.txt` - 100 patrones predefinidos
+- `patrones_150.txt` - 150 patrones predefinidos
+- `patrones_200.txt` - 200 patrones predefinidos
+- `patrones_250.txt` - 250 patrones predefinidos
 
-## ⚠️ Consideraciones Importantes
+**Formato:** Un patrón por línea, sin espacios adicionales.
+
+## Consideraciones Importantes
 
 ### Búsqueda Exacta
 
@@ -200,5 +217,13 @@ El sistema genera automáticamente:
 ### Archivos de Datos
 
 - Los documentos se concatenan con separador `$`
-- Archivos disponibles: `D1.txt` a `D13.txt`
-- Tamaño total: ~13KB de texto de prueba
+- Archivos disponibles: `D1.txt` a `D50.txt`
+- Tamaño total: ~125KB de texto de prueba
+- Cada documento contiene texto real para pruebas realistas
+
+### Medición de Rendimiento
+
+- **Tiempo**: Medido en milisegundos con alta precisión
+- **Memoria**: Medida en KB usando memoria RSS del proceso
+- **Repeticiones**: 20 ejecuciones por experimento para resultados estadísticamente válidos
+- **Exportación**: Resultados automáticamente guardados en CSV para análisis posterior
